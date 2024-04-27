@@ -1,20 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { TimerProvider } from './src/context/TimerContext';
+import MainLayout from './src/layouts/MainLayout';
 
-export default function App() {
+const App = () => {
+  const [fontsLoaded] = useFonts({
+    RobotoBold: require('./assets/fonts/Roboto-Bold.ttf'),
+    RobotoRegular: require('./assets/fonts/Roboto-Regular.ttf'),
+    RobotoLight: require('./assets/fonts/Roboto-Light.ttf'),
+  });
+
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <TimerProvider>
+      <MainLayout onLayoutRootView={onLayoutRootView} />
+    </TimerProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
