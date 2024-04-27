@@ -17,7 +17,7 @@ export const TimerProvider = ({ children }) => {
   useEffect(() => {
     let interval = null;
     if (isActive && time > 0) {
-      interval = setInterval(() => setTime((t) => t - 1), 1);
+      interval = setInterval(() => setTime((t) => t - 1), 1000);
     } else if (time === 0) {
       playSound();
       setIsActive(false);
